@@ -15,8 +15,11 @@ import java.util.*;
  * primitive integral type, short, to store our byte values.
  */
 public class HuffmanTree {
-
-    private static class Node implements Comparable<Node>{
+    
+    /**
+     * a node of a huffman tree
+     */
+    public static class Node implements Comparable<Node> {
 
         private int frequency;
         private short value;
@@ -38,12 +41,45 @@ public class HuffmanTree {
         }
 
         public int compareTo(Node other) {
-            return this.frequency - other.frequency;
+            if (this.frequency > other.frequency) {
+                return 1;
+            } else if (this.frequency == other.frequency && this.value > other.value) {
+                return 1;
+            } else {
+                return -1;
+            }
         }
+        
+        public short getVal(){
+            return value;
+        }
+        
+        public int getFreq(){
+            return frequency;
+        }
+        
+        public boolean isLeaf(){
+            return left == null && right == null;
+        }
+        
     }
 
-    private Node root;
+    /**
+     * the root of huffman tree
+     */
+    public Node root;
+    
 
+    public void printTree(Node node, String indent) {
+    if (node == null) return;
+    if (node.left == null && node.right == null) {
+        System.out.println(indent + "Leaf: " + node.getVal() + " (freq=" + node.getFreq() + ")");
+    } else {
+        System.out.println(indent + "Node: (freq=" + node.getFreq() + ")");
+        printTree(node.left, indent + "  ");
+        printTree(node.right, indent + "  ");
+    }
+}
     /**
      * Constructs a new HuffmanTree from a frequency map.
      *
@@ -59,7 +95,13 @@ public class HuffmanTree {
         while (pq.size() > 1) {
             Node left = pq.poll();
             Node right = pq.poll();
+            if (left.value == -1 && right.value != -1) {
+                Node temp = left;
+                left = right;
+                right = temp;
+            }
             Node parent = new Node(left, right);
+
             pq.add(parent);
         }
         root = pq.poll();
@@ -123,7 +165,6 @@ public class HuffmanTree {
         Node current = root;
         Map<Short, String> codes = new HashMap<>();
         encodeh(root, "", codes);
-        System.out.println("Huffman Codes: " + codes);
         while (true) {
             int value = in.readBits(8);
             if (value == -1) {
@@ -144,19 +185,16 @@ public class HuffmanTree {
         }
     }
 
-    private void encodeh(Node cur, String curCode, Map<Short, String> codes) {
+    private void encodeh(Node cur, String code, Map<Short, String> codes) {
         if (cur == null) {
             return;
         }
         if (cur.left == null && cur.right == null) {
-            codes.put(cur.value, curCode);
-            System.out.println("Leaf node: " + cur.value + " has code: " + curCode);
+            codes.put(cur.value, code);
             return;
         }
-        System.out.println("Recursing left for node: " + cur.value + " with code: " + curCode + "0");
-        encodeh(cur.left, curCode + "0", codes);
-        System.out.println("Recursing right for node: " + cur.value + " with code: " + curCode + "1");
-        encodeh(cur.right, curCode + "1", codes);
+        encodeh(cur.left, code + "0", codes);
+        encodeh(cur.right, code + "1", codes);
     }
 
     /**
@@ -180,7 +218,7 @@ public class HuffmanTree {
             } else {
                 current = current.right;
             }
-            
+
             if (current.left == null && current.right == null) {
                 if (current.value == 256) {
                     out.close();

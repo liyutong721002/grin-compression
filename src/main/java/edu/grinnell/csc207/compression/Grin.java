@@ -14,7 +14,7 @@ public class Grin {
      * .grin file denoted by outfile.
      *
      * @param infile the file to decode
-     * @param outfile the file to ouptut to
+     * @param outfile the file to output
      */
     public static void decode(String infile, String outfile) throws IOException {
         BitInputStream in = new BitInputStream(infile);
@@ -62,9 +62,10 @@ public class Grin {
      * @param outfile the file to write the output to.
      */
     public static void encode(String infile, String outfile) throws IOException {
+        Map<Short, Integer> fmap = createFrequencyMap(infile);
         BitInputStream in = new BitInputStream(infile);
         BitOutputStream out = new BitOutputStream(outfile);
-        HuffmanTree tree = new HuffmanTree(createFrequencyMap(infile));
+        HuffmanTree tree = new HuffmanTree(fmap);
         out.writeBits(0x736, 32);
         tree.serialize(out);
         tree.encode(in, out);
