@@ -15,7 +15,7 @@ import java.util.*;
  * primitive integral type, short, to store our byte values.
  */
 public class HuffmanTree {
-    
+
     /**
      * a node of a huffman tree
      */
@@ -40,6 +40,10 @@ public class HuffmanTree {
             this.right = null;
         }
 
+        /**
+         * @param other a node
+         * @return compare the frequency of the node and the other node
+         */
         public int compareTo(Node other) {
             if (this.frequency > other.frequency) {
                 return 1;
@@ -50,36 +54,34 @@ public class HuffmanTree {
             }
         }
         
-        public short getVal(){
+        /**
+         * @return the value of the node
+         */
+        public short getVal() {
             return value;
         }
-        
-        public int getFreq(){
+
+        /**
+         * @return the frequency of the node
+         */
+        public int getFreq() {
             return frequency;
         }
         
-        public boolean isLeaf(){
+        /**
+         * @return true if the node is a leaf not an internal node
+         */
+        public boolean isLeaf() {
             return left == null && right == null;
         }
-        
+
     }
 
     /**
      * the root of huffman tree
      */
     public Node root;
-    
 
-    public void printTree(Node node, String indent) {
-    if (node == null) return;
-    if (node.left == null && node.right == null) {
-        System.out.println(indent + "Leaf: " + node.getVal() + " (freq=" + node.getFreq() + ")");
-    } else {
-        System.out.println(indent + "Node: (freq=" + node.getFreq() + ")");
-        printTree(node.left, indent + "  ");
-        printTree(node.right, indent + "  ");
-    }
-}
     /**
      * Constructs a new HuffmanTree from a frequency map.
      *
